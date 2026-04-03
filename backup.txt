@@ -1,0 +1,31 @@
+1.
+--
+nohup bash -c 'while true; do [ "$(md5sum /var/www/html/index.html)" != "$(cat /backup/index.md5)" ] && cp /backup/index.html /var/www/html/; sleep 10; done' &
+pkill -f "md5sum /var/www/html/index.html"
+--
+--
+3.
+--
+TOKEN="Hex4romuGwz"
+echo -e '#!/bin/bash\nread -s -p "2FA token: " user_token\n[ "$user_token" = "'$TOKEN'" ] && exec /usr/bin/sudo.real "$@" || echo "Invalid token"' > /tmp/sudo_wrapper && \
+mv /usr/bin/sudo /usr/bin/sudo.real && \
+mv /tmp/sudo_wrapper /usr/bin/sudo && \
+chmod 755 /usr/bin/sudo
+
+# Cкомпрометированный пользователь не сможет выполнить sudo, не зная случайного токена из файла, который виден только root
+--
+--
+4.
+--
+#Холодный бэкап
+
+cp -r /home /backup/home_$(date +%Y%m%d)
+cp -r /etc /backup/etc_$(date +%Y%m%d)
+
+alias rm='rm -i'
+echo "alias rm='rm -i'" >> /root/.bashrc
+--
+echo 'alias rm="mkdir -p /trash/$(date +%Y%m%d) && mv -t /trash/$(date +%Y%m%d)"' >> /root/.bashrc
+echo 'chmod 000 /trash/* 2>/dev/null' >> /etc/profile
+
+#Удалённые файлы лежат в /trash с правами 000 - не прочитать и не удалить повторно. Восстановление через chmod 755 и mv обратно.
