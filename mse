@@ -1,0 +1,7 @@
+no dmz - users все
+yes servers - DMZ TCP 22
+yes users - DMZ TCP 3389
+yes users - servers все
+yes DMZ - dc TCP 88, 389, 464, USP 88, 464
+no DMZ - servers
+yes DMZ - any
